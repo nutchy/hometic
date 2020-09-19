@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,6 +9,11 @@ import (
 
 	"github.com/gorilla/mux"
 )
+
+type Pair struct {
+	Device uint64
+	UserID uint64
+}
 
 // git init, git add server.go go.mod, git commit -m "[Nong] init project"
 func main() {
@@ -25,5 +31,12 @@ func main() {
 }
 
 func PairDeviceHandler(w http.ResponseWriter, r *http.Request) {
+	var p Pair
+	err := json.NewDecoder(r.Body).Decode(&p)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	defer r.Body.Close()
+	fmt.Printf("pair %+v", p)
 	w.Write([]byte(`{"status":"active"}`))
 }

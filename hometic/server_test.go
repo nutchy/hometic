@@ -1,13 +1,17 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestCreatePairDevice(t *testing.T) {
-	req := httptest.NewRequest(http.MethodPost, "/pair-device", nil)
+	payload := new(bytes.Buffer)
+	json.NewEncoder(payload).Encode(Pair{Device: 123, UserID: 456})
+	req := httptest.NewRequest(http.MethodPost, "/pair-device", payload)
 	rec := httptest.NewRecorder()
 
 	PairDeviceHandler(rec, req)
